@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GhaddabGo | متجر تونسي</title>
+  <meta name="description" content="GhaddabGo - متجر إلكتروني تونسي">
+  <style>
+    :root{--bg:#f6f7fb;--card:#fff;--text:#171923;--muted:#667085;--primary:#111827;--accent:#16a34a;--danger:#dc2626;--line:#e5e7eb}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Tahoma,sans-serif;background:var(--bg);color:var(--text)}
+    header{background:var(--primary);color:#fff;padding:16px}
+    .wrap{max-width:1050px;margin:auto}
+    nav{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .logo{font-size:23px;font-weight:800}
+    button{border:0;border-radius:12px;padding:11px 15px;font-weight:700;cursor:pointer}
+    .cartBtn{background:#fff;color:#111827}
+    .hero{padding:34px 16px;text-align:center;background:linear-gradient(135deg,#111827,#374151);color:#fff}
+    .hero h1{margin:0 0 10px;font-size:34px}.hero p{margin:0;color:#e5e7eb}
+    section{padding:24px 16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 4px 16px #0000000a}
+    .productIcon{height:150px;border-radius:14px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:64px;margin-bottom:14px}
+    .price{font-size:20px;font-weight:800;margin:8px 0 14px}.muted{color:var(--muted)}
+    .add{background:var(--accent);color:#fff;width:100%}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:20px}
+    input,textarea,select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;margin-top:6px;margin-bottom:12px;font-size:16px;background:#fff}
+    label{font-weight:700}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:650px){.row{grid-template-columns:1fr}}
+    .submit{background:#111827;color:#fff;width:100%;font-size:17px}
+    .danger{background:var(--danger);color:#fff}.secondary{background:#e5e7eb;color:#111827}
+    .notice{background:#fff7ed;border:1px solid #fed7aa;padding:12px;border-radius:12px;margin:10px 0;color:#9a3412}
+    .success{background:#ecfdf3;border:1px solid #a7f3d0;padding:12px;border-radius:12px;color:#166534}
+    .order{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:#fafafa}
+    .orderHead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .badge{display:inline-block;padding:6px 9px;border-radius:999px;background:#e5e7eb;font-size:13px;font-weight:700}
+    .adminBtn{margin-top:10px;background:#374151;color:#fff;width:100%}
+    footer{text-align:center;padding:28px;color:var(--muted)}
+    .hidden{display:none}
+    .cartLine{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="logo">🛍️ GhaddabGo</div>
+      <button class="cartBtn" onclick="scrollToId('order')">السلة: <span id="cartCount">0</span></button>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>مرحبا بك في GhaddabGo 🇹🇳</h1>
+    <p>متجر تونسي حديث — اطلب بسهولة وسنؤكد الطلب قبل إرساله للتوصيل.</p>
+  </div>
+</div>
+
+<section class="wrap">
+  <h2>المنتجات</h2>
+  <div class="grid" id="products"></div>
+
+  <div class="panel" id="order">
+    <h2>🛒 طلبك</h2>
+    <div id="cart"></div>
+    <div id="cartTotal" class="price">المجموع: 0 د.ت</div>
+
+    <form id="orderForm">
+      <div class="row">
+        <div>
+          <label>الاسم واللقب</label>
+          <input id="name" required placeholder="مثال: محمد علي">
+        </div>
+        <div>
+          <label>الهاتف</label>
+          <input id="phone" required inputmode="tel" placeholder="مثال: 20 000 000">
+        </div>
+      </div>
+
+      <label>العنوان</label>
+      <textarea id="address" required placeholder="الولاية، المدينة، الشارع..."></textarea>
+
+      <div class="notice">
+        <b>مهم:</b> قبل إرسال الطلب سنتصل بك لتأكيده. حالات الإلغاء والإرجاع تخضع لحقوق المستهلك والقواعد القانونية المعمول بها في تونس.
+      </div>
+
+      <label style="display:flex;gap:8px;align-items:flex-start;font-weight:600">
+        <input id="confirm" type="checkbox" required style="width:auto;margin:3px 0 0">
+        أؤكد أن بيانات الاتصال والعنوان صحيحة وأرغب في تأكيد الطلب.
+      </label>
+
+      <button class="submit" type="submit">إرسال الطلب للتأكيد</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <div class="panel">
+    <h2>👨‍💼 إدارة المتجر</h2>
+    <p class="muted">هذه النسخة تحتوي على سجل محلي للطلبات وحالات التوصيل. التخزين المحلي مناسب للتجربة فقط وليس بديلاً عن قاعدة بيانات حقيقية.</p>
+    <button class="adminBtn" onclick="openAdmin()">فتح لوحة الإدارة</button>
+  </div>
+
+  <div class="panel hidden" id="adminPanel">
+    <h2>لوحة الإدارة</h2>
+    <p class="muted">الحالات: جديد → تم التأكيد → خرج للتوصيل → تم التسليم / رفض الاستلام / ملغى.</p>
+    <div id="adminOrders"></div>
+    <button class="secondary" onclick="closeAdmin()">إغلاق</button>
+  </div>
+</section>
+
+<footer>© 2026 GhaddabGo — متجر تونسي</footer>
+
+<script>
+const products = [
+  {id:1,name:"قميص عصري",price:45,icon:"👕"},
+  {id:2,name:"حذاء رياضي",price:89,icon:"👟"},
+  {id:3,name:"سماعات لاسلكية",price:59,icon:"🎧"},
+  {id:4,name:"ساعة ذكية",price:119,icon:"⌚"}
+];
+
+let cart = JSON.parse(localStorage.getItem("ghaddab_cart") || "[]");
+
+function saveCart(){localStorage.setItem("ghaddab_cart",JSON.stringify(cart));}
+function money(n){return Number(n).toFixed(0)+" د.ت";}
+function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:"smooth"});}
+
+function renderProducts(){
+  document.getElementById("products").innerHTML = products.map(p => `
+    <div class="card">
+      <div class="productIcon">${p.icon}</div>
+      <h3>${p.name}</h3>
+      <div class="price">${money(p.price)}</div>
+      <button class="add" onclick="addToCart(${p.id})">أضف إلى السلة</button>
+    </div>
+  `).join("");
+}
+
+function addToCart(id){
+  const p=products.find(x=>x.id===id);
+  cart.push(p);
+  saveCart(); renderCart();
+  scrollToId("order");
+}
+
+function removeFromCart(index){
+  cart.splice(index,1); saveCart(); renderCart();
+}
+
+function renderCart(){
+  document.getElementById("cartCount").textContent=cart.length;
+  const box=document.getElementById("cart");
+  if(!cart.length){
+    box.innerHTML='<p class="muted">السلة فارغة. اختر منتجاً للمتابعة.</p>';
+  }else{
+    box.innerHTML=cart.map((p,i)=>`
+      <div class="cartLine">
+        <span>${p.icon} ${p.name}</span>
+        <span>${money(p.price)} <button class="secondary" onclick="removeFromCart(${i})">حذف</button></span>
+      </div>
+    `).join("");
+  }
+  const total=cart.reduce((s,p)=>s+p.price,0);
+  document.getElementById("cartTotal").textContent="المجموع: "+money(total);
+}
+
+document.getElementById("orderForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  if(!cart.length){alert("أضف منتجاً واحداً على الأقل.");return;}
+
+  const order={
+    id:"GG-"+Date.now().toString().slice(-8),
+    date:new Date().toLocaleString("ar-TN"),
+    name:document.getElementById("name").value.trim(),
+    phone:document.getElementById("phone").value.trim(),
+    address:document.getElementById("address").value.trim(),
+    items:cart.map(p=>p.name),
+    total:cart.reduce((s,p)=>s+p.price,0),
+    status:"جديد",
+    deliveryCost:0,
+    note:""
+  };
+
+  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
+  orders.unshift(order);
+  localStorage.setItem("ghaddab_orders",JSON.stringify(orders));
+
+  document.getElementById("message").innerHTML=`
+    <div class="success" style="margin-top:12px">
+      <b>تم إرسال الطلب بنجاح ✅</b><br>
+      رقم الطلب: <b>${order.id}</b><br>
+      سنتصل بك لتأكيد الطلب قبل إرساله للتوصيل.
+    </div>`;
+  this.reset();
+  cart=[]; saveCart(); renderCart();
+});
+
+function openAdmin(){
+  const pin=prompt("أدخل رمز الإدارة التجريبي:");
+  if(pin!=="1234"){alert("رمز غير صحيح.");return;}
+  document.getElementById("adminPanel").classList.remove("hidden");
+  renderAdmin();
+  scrollToId("adminPanel");
+}
+
+function closeAdmin(){document.getElementById("adminPanel").classList.add("hidden");}
+
+function renderAdmin(){
+  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
+  const box=document.getElementById("adminOrders");
+  if(!orders.length){box.innerHTML='<p class="muted">لا توجد طلبات بعد.</p>';return;}
+
+  box.innerHTML=orders.map((o,i)=>`
+    <div class="order">
+      <div class="orderHead">
+        <b>${o.id}</b>
+        <span class="badge">${o.status}</span>
+      </div>
+      <p><b>الحريف:</b> ${escapeHtml(o.name)}</p>
+      <p><b>الهاتف:</b> ${escapeHtml(o.phone)}</p>
+      <p><b>العنوان:</b> ${escapeHtml(o.address)}</p>
+      <p><b>المنتجات:</b> ${o.items.map(escapeHtml).join("، ")}</p>
+      <p><b>المجموع:</b> ${money(o.total)}</p>
+      <label>حالة الطلب</label>
+      <select onchange="changeStatus(${i},this.value)">
+        ${["جديد","تم التأكيد","خرج للتوصيل","تم التسليم","رفض الاستلام","ملغى"].map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}
+      </select>
+      <label>مصاريف التوصيل الفعلية (للمتابعة الداخلية)</label>
+      <input type="number" min="0" value="${o.deliveryCost||0}" onchange="changeDeliveryCost(${i},this.value)">
+      <label>ملاحظة الإدارة</label>
+      <input value="${escapeAttr(o.note||"")}" onchange="changeNote(${i},this.value)" placeholder="مثال: رفض الاستلام بعد خروج الموزع">
+      <button class="danger" onclick="deleteOrder(${i})">حذف السجل</button>
+    </div>
+  `).join("");
+}
+
+function changeStatus(i,status){
+  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
+  orders[i].status=status; localStorage.setItem("ghaddab_orders",JSON.stringify(orders)); renderAdmin();
+}
+function changeDeliveryCost(i,value){
+  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
+  orders[i].deliveryCost=Number(value)||0; localStorage.setItem("ghaddab_orders",JSON.stringify(orders));
+}
+function changeNote(i,value){
+  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
+  orders[i].note=value; localStorage.setItem("ghaddab_orders",JSON.stringify(orders));
+}
+function deleteOrder(i){
+  if(!confirm("هل تريد حذف هذا السجل؟"))return;
+  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
+  orders.splice(i,1); localStorage.setItem("ghaddab_orders",JSON.stringify(orders)); renderAdmin();
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function escapeAttr(s){return escapeHtml(s);}
+
+renderProducts();
+renderCart();
+</script>
+</body>
+</html>
