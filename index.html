@@ -5,40 +5,218 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>GhaddabGo | متجر تونسي</title>
   <meta name="description" content="GhaddabGo - متجر إلكتروني تونسي">
-  <style>
-    :root{--bg:#f6f7fb;--card:#fff;--text:#171923;--muted:#667085;--primary:#111827;--accent:#16a34a;--danger:#dc2626;--line:#e5e7eb}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Tahoma,sans-serif;background:var(--bg);color:var(--text)}
-    header{background:var(--primary);color:#fff;padding:16px}
-    .wrap{max-width:1050px;margin:auto}
-    nav{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .logo{font-size:23px;font-weight:800}
-    button{border:0;border-radius:12px;padding:11px 15px;font-weight:700;cursor:pointer}
-    .cartBtn{background:#fff;color:#111827}
-    .hero{padding:34px 16px;text-align:center;background:linear-gradient(135deg,#111827,#374151);color:#fff}
-    .hero h1{margin:0 0 10px;font-size:34px}.hero p{margin:0;color:#e5e7eb}
-    section{padding:24px 16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 4px 16px #0000000a}
-    .productIcon{height:150px;border-radius:14px;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:64px;margin-bottom:14px}
-    .price{font-size:20px;font-weight:800;margin:8px 0 14px}.muted{color:var(--muted)}
-    .add{background:var(--accent);color:#fff;width:100%}
-    .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:20px}
-    input,textarea,select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;margin-top:6px;margin-bottom:12px;font-size:16px;background:#fff}
-    label{font-weight:700}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media(max-width:650px){.row{grid-template-columns:1fr}}
-    .submit{background:#111827;color:#fff;width:100%;font-size:17px}
-    .danger{background:var(--danger);color:#fff}.secondary{background:#e5e7eb;color:#111827}
-    .notice{background:#fff7ed;border:1px solid #fed7aa;padding:12px;border-radius:12px;margin:10px 0;color:#9a3412}
-    .success{background:#ecfdf3;border:1px solid #a7f3d0;padding:12px;border-radius:12px;color:#166534}
-    .order{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:#fafafa}
-    .orderHead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-    .badge{display:inline-block;padding:6px 9px;border-radius:999px;background:#e5e7eb;font-size:13px;font-weight:700}
-    .adminBtn{margin-top:10px;background:#374151;color:#fff;width:100%}
-    footer{text-align:center;padding:28px;color:var(--muted)}
-    .hidden{display:none}
-    .cartLine{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
-  </style>
+<style>
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --primary:#111827;
+  --accent:#16a34a;
+  --accent2:#f59e0b;
+  --text:#111827;
+  --muted:#64748b;
+  --line:#e2e8f0;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Tahoma,sans-serif;
+  direction:rtl;
+}
+.wrap{
+  width:min(1100px,calc(100% - 28px));
+  margin:auto;
+}
+header{
+  background:linear-gradient(135deg,#111827,#1f2937);
+  color:#fff;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 4px 20px #0002;
+}
+nav{
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.logo{
+  font-size:25px;
+  font-weight:900;
+}
+.cartBtn{
+  background:#fff;
+  color:#111827;
+  border:0;
+  border-radius:14px;
+  padding:11px 16px;
+  font-weight:800;
+  cursor:pointer;
+}
+.hero{
+  margin-top:20px;
+  padding:45px 20px;
+  border-radius:25px;
+  text-align:center;
+  color:#fff;
+  background:linear-gradient(135deg,#16a34a,#15803d);
+  box-shadow:0 10px 30px #16a34a33;
+}
+.hero h1{
+  margin:0 0 12px;
+  font-size:36px;
+}
+.hero p{
+  margin:0;
+  font-size:18px;
+  line-height:1.8;
+}
+section{
+  padding:25px 0;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 5px 18px #0000000a;
+  transition:.2s;
+}
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px #00000015;
+}
+.card h3{
+  margin:8px 0;
+  font-size:19px;
+}
+.card p{
+  color:var(--muted);
+  line-height:1.6;
+}
+.price{
+  color:#15803d;
+  font-size:21px;
+  font-weight:900;
+  margin:12px 0;
+}
+.card button{
+  width:100%;
+  border:0;
+  border-radius:13px;
+  padding:12px;
+  background:#111827;
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+input,textarea,select{
+  width:100%;
+  padding:14px;
+  margin:6px 0 12px;
+  border:1px solid #cbd5e1;
+  border-radius:13px;
+  background:#fff;
+  font-size:16px;
+}
+label{
+  font-weight:800;
+  display:block;
+  margin-top:8px;
+}
+.notice{
+  background:#fff7ed;
+  border:1px solid #fdba74;
+  color:#9a3412;
+  padding:16px;
+  border-radius:16px;
+  line-height:1.8;
+}
+.success{
+  background:#ecfdf5;
+  border:1px solid #6ee7b7;
+  color:#166534;
+  padding:16px;
+  border-radius:16px;
+  line-height:1.8;
+}
+.danger{
+  background:#fee2e2;
+  color:#991b1b;
+  padding:14px;
+  border-radius:14px;
+}
+.order{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:18px;
+  margin:12px 0;
+}
+.orderHead{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#dcfce7;
+  color:#166534;
+  font-weight:800;
+}
+.adminBtn{
+  margin-top:10px;
+  width:100%;
+  background:#374151;
+  color:#fff;
+  border:0;
+  border-radius:14px;
+  padding:14px;
+  font-size:17px;
+  font-weight:800;
+}
+footer{
+  text-align:center;
+  padding:35px 10px;
+  color:var(--muted);
+}
+.hidden{display:none}
+.cartLine{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+@media(max-width:800px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .hero h1{font-size:29px}
+}
+@media(max-width:520px){
+  .wrap{width:min(100% - 20px,1100px)}
+  .grid{grid-template-columns:1fr}
+  .logo{font-size:21px}
+  .hero{padding:32px 15px}
+  .hero h1{font-size:27px}
+  .hero p{font-size:16px}
+  .card{padding:16px}
+}
+</style>
 </head>
 <body>
 <header>
