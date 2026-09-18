@@ -163,36 +163,58 @@ function renderCart(){
   const total=cart.reduce((s,p)=>s+p.price,0);
   document.getElementById("cartTotal").textContent="المجموع: "+money(total);
 }
-
-document.getElementById("orderForm").addEventListener("submit",function(e){
+document.getElementById("orderForm").addEventListener("submit",async function(e){
   e.preventDefault();
   if(!cart.length){alert("أضف منتجاً واحداً على الأقل.");return;}
 
-  const order={
-    id:"GG-"+Date.now().toString().slice(-8),
-    date:new Date().toLocaleString("ar-TN"),
-    name:document.getElementById("name").value.trim(),
-    phone:document.getElementById("phone").value.trim(),
-    address:document.getElementById("address").value.trim(),
-    items:cart.map(p=>p.name),
-    total:cart.reduce((s,p)=>s+p.price,0),
-    status:"جديد",
-    deliveryCost:0,
-    note:""
-  };
+  const name=document.getElementById("name").value.trim();
+  const phone=document.getElementById("phone").value.trim();
+  const address=document.getElementById("address").value.trim();
+  const total=cart.reduce((s,p)=>s+p.price,0);
+  const orderNumber="GG-"+Date.now().toString().slice(-8);
 
-  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
-  orders.unshift(order);
-  localStorage.setItem("ghaddab_orders",JSON.stringify(orders));
+  const {error}=await sb.from("orders").insert({
+    customer_name:name,
+    customer_phone:phone,
+    customer_address:address,
+    total_tnd:total,
+    status:"جديد",
+    payment_method:"الدفع عند الاستلام"
+  });
+
+  if(error){
+    console.error(error);
+    document.getElementById("message").innerHTML=`
+      <div class="notice" style="margin-top:12px">
+        صار مشكل في إرسال الطلب. حاول مرة أخرى.
+      </div>`;
+    return;
+  }
+
+  const items=cart.map(p=>p.name).join("، ");
+
+  const waText=`طلب جديد من GhaddabGo
+رقم الطلب: ${orderNumber}
+الاسم: ${name}
+الهاتف: ${phone}
+العنوان: ${address}
+المنتجات: ${items}
+المجموع: ${total} د.ت
+الدفع: عند الاستلام`;
 
   document.getElementById("message").innerHTML=`
     <div class="success" style="margin-top:12px">
       <b>تم إرسال الطلب بنجاح ✅</b><br>
-      رقم الطلب: <b>${order.id}</b><br>
-      سنتصل بك لتأكيد الطلب قبل إرساله للتوصيل.
+      رقم الطلب: <b>${orderNumber}</b><br>
+      سيتم التواصل معك لتأكيد الطلب.
     </div>`;
+
+  window.open("https://wa.me/21625475226?text="+encodeURIComponent(waText),"_blank");
+
   this.reset();
-  cart=[]; saveCart(); renderCart();
+  cart=[];
+  saveCart();
+  renderCart();
 });
 
 function openAdmin(){
