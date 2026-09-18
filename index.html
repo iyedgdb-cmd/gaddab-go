@@ -256,6 +256,12 @@ function escapeAttr(s){return escapeHtml(s);}
 
 renderProducts();
 renderCart();
+  const wa=document.createElement("a");
+wa.href="https://wa.me/21625475226?text="+encodeURIComponent("مرحبا GhaddabGo 👋 أريد الاستفسار عن منتج.");
+wa.target="_blank";
+wa.textContent="💬 WhatsApp";
+wa.style="position:fixed;bottom:20px;left:20px;background:#25D366;color:white;padding:14px 20px;border-radius:30px;text-decoration:none;font-weight:bold;z-index:9999;";
+document.body.appendChild(wa);
 </script>
 </body>
 </html>
