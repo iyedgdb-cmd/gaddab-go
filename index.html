@@ -293,15 +293,28 @@ footer{
 
   <div class="panel">
     <h2>👨‍💼 إدارة المتجر</h2>
-    <p class="muted">هذه النسخة تحتوي على سجل محلي للطلبات وحالات التوصيل. التخزين المحلي مناسب للتجربة فقط وليس بديلاً عن قاعدة بيانات حقيقية.</p>
-    <button class="adminBtn" onclick="openAdmin()">فتح لوحة الإدارة</button>
+    <p class="muted">دخول المدير الفعلي محمي بحساب Supabase وصلاحية المدير.</p>
+    <button class="adminBtn" onclick="openAdmin()">دخول الإدارة</button>
   </div>
 
   <div class="panel hidden" id="adminPanel">
     <h2>لوحة الإدارة</h2>
-    <p class="muted">الحالات: جديد → تم التأكيد → خرج للتوصيل → تم التسليم / رفض الاستلام / ملغى.</p>
-    <div id="adminOrders"></div>
-    <button class="secondary" onclick="closeAdmin()">إغلاق</button>
+    <div id="adminLogin">
+      <p class="muted">أدخل بريد المدير وكلمة المرور.</p>
+      <label>بريد المدير</label>
+      <input id="adminEmail" type="email" autocomplete="username" placeholder="admin@example.com">
+      <label>كلمة المرور</label>
+      <input id="adminPassword" type="password" autocomplete="current-password" placeholder="••••••••">
+      <button class="submit" type="button" onclick="adminLogin()">تسجيل الدخول</button>
+      <div id="adminLoginMessage"></div>
+    </div>
+    <div id="adminContent" class="hidden">
+      <div class="success">تم تسجيل دخول المدير فعلياً ✅</div>
+      <p class="muted">الحالات: جديد → تم التأكيد → خرج للتوصيل → تم التسليم / رفض الاستلام / ملغى.</p>
+      <div id="adminOrders"></div>
+      <button class="secondary" type="button" onclick="adminLogout()">تسجيل الخروج</button>
+    </div>
+    <button class="secondary" type="button" onclick="closeAdmin()">إغلاق</button>
   </div>
 </section>
 
@@ -422,13 +435,42 @@ document.getElementById("orderForm").addEventListener("submit",async function(e)
   this.reset();cart=[];saveCart();renderCart();
 });
 
-function openAdmin(){
-  const pin=prompt("أدخل رمز الإدارة التجريبي:");
-  if(pin!=="1234"){alert("رمز غير صحيح.");return;}
+async function openAdmin(){
   document.getElementById("adminPanel").classList.remove("hidden");
-  renderAdmin();scrollToId("adminPanel");
+  scrollToId("adminPanel");
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){
+    const {data:admin,error}=await sb.from("admins").select("user_id").eq("user_id",session.user.id).maybeSingle();
+    if(!error && admin){showAdminContent();return;}
+    await sb.auth.signOut();
+  }
+  document.getElementById("adminLogin").classList.remove("hidden");
+  document.getElementById("adminContent").classList.add("hidden");
 }
 function closeAdmin(){document.getElementById("adminPanel").classList.add("hidden");}
+function showAdminContent(){
+  document.getElementById("adminLogin").classList.add("hidden");
+  document.getElementById("adminContent").classList.remove("hidden");
+  renderAdmin();
+}
+async function adminLogin(){
+  const email=(document.getElementById("adminEmail").value||"").trim();
+  const password=document.getElementById("adminPassword").value||"";
+  const msg=document.getElementById("adminLoginMessage");
+  if(!email||!password){msg.innerHTML='<div class="danger">أدخل البريد الإلكتروني وكلمة المرور.</div>';return;}
+  msg.innerHTML='<p class="muted">جاري تسجيل الدخول...</p>';
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error){msg.innerHTML='<div class="danger">بيانات الدخول غير صحيحة أو الحساب غير مفعّل.</div>';return;}
+  const {data:admin,error:adminError}=await sb.from("admins").select("user_id").eq("user_id",data.user.id).maybeSingle();
+  if(adminError||!admin){await sb.auth.signOut();msg.innerHTML='<div class="danger">هذا الحساب ليس لديه صلاحية مدير.</div>';return;}
+  msg.innerHTML="";showAdminContent();
+}
+async function adminLogout(){
+  await sb.auth.signOut();
+  document.getElementById("adminContent").classList.add("hidden");
+  document.getElementById("adminLogin").classList.remove("hidden");
+  document.getElementById("adminPassword").value="";
+}
 
 async function renderAdmin(){
   const box=document.getElementById("adminOrders");
