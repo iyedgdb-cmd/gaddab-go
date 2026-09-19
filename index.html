@@ -460,7 +460,7 @@ async function renderAdmin(){
       <input type="number" min="0" step="0.1" value="${escapeAttr(m.delivery_cost||"0")}" onchange="saveAdminMeta(${o.id},'delivery_cost',this.value)">
       <label>ملاحظة الإدارة</label>
       <textarea placeholder="مثال: رفض الاستلام بعد خروج الموزع" onchange="saveAdminMeta(${o.id},'admin_note',this.value)">${escapeHtml(m.admin_note||"")}</textarea>
-      <button class="secondary" onclick="saveAdminMeta(${o.id},'save','1')">حفظ الملاحظة والمصاريف</button>
+      <button type="button" onclick="saveAdminMeta(${o.id},'save','1');alert('تم حفظ الملاحظة ومصاريف التوصيل محلياً ✅');" style="margin-top:10px;width:100%;background:#16a34a;color:#fff;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:900;cursor:pointer">💾 حفظ الملاحظة والمصاريف</button>
       <button style="margin-top:10px;background:#dc2626;color:#fff;border:0;border-radius:14px;padding:12px;font-weight:800" onclick="deleteAdminRecord(${o.id})">حذف السجل</button>
     </div>`;
   }).join("");
