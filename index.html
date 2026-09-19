@@ -312,176 +312,163 @@ footer{
 const SUPABASE_URL = "https://jexlfdnwlgtflexjeza.supabase.co";
 const SUPABASE_KEY = "sb_publishable_PX7R316oR8pXP5tXTYBdsw_N5uGgU56";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const products = [
-  {id:1,name:"قميص عصري",price:45,icon:"👕"},
-  {id:2,name:"حذاء رياضي",price:89,icon:"👟"},
-  {id:3,name:"سماعات لاسلكية",price:59,icon:"🎧"},
-  {id:4,name:"ساعة ذكية",price:119,icon:"⌚"}
-];
 
+let products = [];
 let cart = JSON.parse(localStorage.getItem("ghaddab_cart") || "[]");
 
 function saveCart(){localStorage.setItem("ghaddab_cart",JSON.stringify(cart));}
-function money(n){return Number(n).toFixed(0)+" د.ت";}
+function money(n){return Number(n||0).toFixed(0)+" د.ت";}
 function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:"smooth"});}
 
-function renderProducts(){
-  document.getElementById("products").innerHTML = products.map(p => `
-    <div class="card">
-      <div class="productIcon">${p.icon}</div>
-      <h3>${p.name}</h3>
-      <div class="price">${money(p.price)}</div>
-      <button class="add" onclick="addToCart(${p.id})">أضف إلى السلة</button>
-    </div>
-  `).join("");
+async function loadProducts(){
+  const {data,error}=await sb.from("products")
+    .select("id,name,slug,description,price_tnd,stock,category_id,image_url,active")
+    .eq("active",true)
+    .order("created_at",{ascending:false});
+  if(error){
+    console.error(error);
+    document.getElementById("products").innerHTML='<div class="notice">تعذر تحميل المنتجات من قاعدة البيانات. تأكد من سياسات RLS في Supabase.</div>';
+    return;
+  }
+  products=(data||[]).map(p=>({...p,price:Number(p.price_tnd||0)}));
+  renderProducts();
 }
+
+function renderProducts(){
+  const q=(document.getElementById("searchBox").value||"").trim().toLowerCase();
+  const list=products.filter(p=>!q || [p.name,p.description,p.slug].filter(Boolean).join(" ").toLowerCase().includes(q));
+  const box=document.getElementById("products");
+  if(!list.length){box.innerHTML='<div class="notice">لا توجد منتجات متاحة حالياً.</div>';return;}
+  box.innerHTML=list.map(p=>{
+    const disabled=Number(p.stock||0)<=0;
+    return `
+      <div class="card">
+        ${p.image_url ? `<img src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" style="width:100%;height:190px;object-fit:cover;border-radius:15px">` : '<div style="font-size:64px;text-align:center;padding:30px">🛍️</div>'}
+        <h3>${escapeHtml(p.name)}</h3>
+        ${p.description ? `<p>${escapeHtml(p.description)}</p>` : ""}
+        <div class="price">${money(p.price_tnd)}</div>
+        <small>المخزون: ${Number(p.stock||0)}</small>
+        <button class="add" ${disabled?"disabled":""} onclick="addToCart('${p.id}')">${disabled?"غير متوفر":"أضف إلى السلة"}</button>
+      </div>`;
+  }).join("");
+}
+function filterProducts(){renderProducts();}
+function filterCategory(){renderProducts();}
 
 function addToCart(id){
-  const p=products.find(x=>x.id===id);
-  cart.push(p);
-  saveCart(); renderCart();
-  scrollToId("order");
+  const p=products.find(x=>String(x.id)===String(id));
+  if(!p || Number(p.stock||0)<=0)return;
+  cart.push({id:p.id,name:p.name,price:Number(p.price_tnd||0),image_url:p.image_url||null});
+  saveCart();renderCart();scrollToId("order");
 }
-
-function removeFromCart(index){
-  cart.splice(index,1); saveCart(); renderCart();
-}
-
+function removeFromCart(i){cart.splice(i,1);saveCart();renderCart();}
 function renderCart(){
   document.getElementById("cartCount").textContent=cart.length;
   const box=document.getElementById("cart");
-  if(!cart.length){
-    box.innerHTML='<p class="muted">السلة فارغة. اختر منتجاً للمتابعة.</p>';
-  }else{
-    box.innerHTML=cart.map((p,i)=>`
-      <div class="cartLine">
-        <span>${p.icon} ${p.name}</span>
-        <span>${money(p.price)} <button class="secondary" onclick="removeFromCart(${i})">حذف</button></span>
-      </div>
-    `).join("");
-  }
-  const total=cart.reduce((s,p)=>s+p.price,0);
-  document.getElementById("cartTotal").textContent="المجموع: "+money(total);
+  box.innerHTML=cart.length ? cart.map((p,i)=>`
+    <div class="cartLine"><span>🛍️ ${escapeHtml(p.name)}</span><span>${money(p.price)} <button class="secondary" onclick="removeFromCart(${i})">حذف</button></span></div>`).join("") :
+    '<p class="muted">السلة فارغة. اختر منتجاً للمتابعة.</p>';
+  document.getElementById("cartTotal").textContent="المجموع: "+money(cart.reduce((s,p)=>s+Number(p.price||0),0));
 }
+
 document.getElementById("orderForm").addEventListener("submit",async function(e){
   e.preventDefault();
   if(!cart.length){alert("أضف منتجاً واحداً على الأقل.");return;}
-
   const name=document.getElementById("name").value.trim();
   const phone=document.getElementById("phone").value.trim();
   const address=document.getElementById("address").value.trim();
-  const total=cart.reduce((s,p)=>s+p.price,0);
+  const total=cart.reduce((s,p)=>s+Number(p.price||0),0);
   const orderNumber="GG-"+Date.now().toString().slice(-8);
+  const messageBox=document.getElementById("message");
 
-  const {error}=await sb.from("orders").insert({
-    customer_name:name,
-    customer_phone:phone,
-    customer_address:address,
-    total_tnd:total,
-    status:"جديد",
-    payment_method:"الدفع عند الاستلام"
-  });
+  const {data:order,error}=await sb.from("orders").insert({
+    customer_name:name,customer_phone:phone,customer_address:address,
+    total_tnd:total,status:"جديد",payment_method:"الدفع عند الاستلام"
+  }).select("id").single();
 
   if(error){
     console.error(error);
-    document.getElementById("message").innerHTML=`
-      <div class="notice" style="margin-top:12px">
-        صار مشكل في إرسال الطلب. حاول مرة أخرى.
-      </div>`;
+    messageBox.innerHTML='<div class="notice" style="margin-top:12px">صار مشكل في إرسال الطلب. تأكد من RLS ثم حاول مرة أخرى.</div>';
     return;
   }
 
-  const items=cart.map(p=>p.name).join("، ");
+  const grouped=new Map();
+  cart.forEach(p=>{
+    const key=String(p.id);
+    const x=grouped.get(key);
+    if(x)x.quantity++;else grouped.set(key,{product_id:p.id,quantity:1,price_tnd:Number(p.price||0)});
+  });
+  const items=[...grouped.values()].map(x=>({order_id:order.id,product_id:x.product_id,quantity:x.quantity,price_tnd:x.price_tnd}));
+  const {error:itemError}=await sb.from("order_items").insert(items);
+
+  if(itemError){
+    console.error(itemError);
+    messageBox.innerHTML='<div class="notice" style="margin-top:12px">تم إنشاء الطلب لكن تعذر حفظ تفاصيل المنتجات. راجع صلاحيات order_items في Supabase.</div>';
+    return;
+  }
 
   const waText=`طلب جديد من GhaddabGo
 رقم الطلب: ${orderNumber}
+رقم قاعدة البيانات: ${order.id}
 الاسم: ${name}
 الهاتف: ${phone}
 العنوان: ${address}
-المنتجات: ${items}
+المنتجات: ${cart.map(p=>p.name).join("، ")}
 المجموع: ${total} د.ت
 الدفع: عند الاستلام`;
 
-  document.getElementById("message").innerHTML=`
-    <div class="success" style="margin-top:12px">
-      <b>تم إرسال الطلب بنجاح ✅</b><br>
-      رقم الطلب: <b>${orderNumber}</b><br>
-      سيتم التواصل معك لتأكيد الطلب.
-    </div>`;
-
+  messageBox.innerHTML=`<div class="success" style="margin-top:12px"><b>تم إرسال الطلب بنجاح ✅</b><br>رقم الطلب: <b>${orderNumber}</b><br>سيتم التواصل معك لتأكيد الطلب.</div>`;
   window.open("https://wa.me/21625475226?text="+encodeURIComponent(waText),"_blank");
-
-  this.reset();
-  cart=[];
-  saveCart();
-  renderCart();
+  this.reset();cart=[];saveCart();renderCart();
 });
 
 function openAdmin(){
   const pin=prompt("أدخل رمز الإدارة التجريبي:");
   if(pin!=="1234"){alert("رمز غير صحيح.");return;}
   document.getElementById("adminPanel").classList.remove("hidden");
-  renderAdmin();
-  scrollToId("adminPanel");
+  renderAdmin();scrollToId("adminPanel");
 }
-
 function closeAdmin(){document.getElementById("adminPanel").classList.add("hidden");}
 
-function renderAdmin(){
-  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
+async function renderAdmin(){
   const box=document.getElementById("adminOrders");
-  if(!orders.length){box.innerHTML='<p class="muted">لا توجد طلبات بعد.</p>';return;}
-
-  box.innerHTML=orders.map((o,i)=>`
+  box.innerHTML="<p>جاري تحميل الطلبات...</p>";
+  const {data:orders,error}=await sb.from("orders")
+    .select("id,customer_name,customer_phone,customer_address,total_tnd,status,payment_method,created_at")
+    .order("created_at",{ascending:false});
+  if(error){
+    console.error(error);
+    box.innerHTML='<div class="notice">لا يمكن للإدارة قراءة الطلبات حالياً. يجب تسجيل دخول المدير وتطبيق سياسة RLS المناسبة.</div>';
+    return;
+  }
+  if(!orders?.length){box.innerHTML='<p class="muted">لا توجد طلبات بعد.</p>';return;}
+  box.innerHTML=orders.map(o=>`
     <div class="order">
-      <div class="orderHead">
-        <b>${o.id}</b>
-        <span class="badge">${o.status}</span>
-      </div>
-      <p><b>الحريف:</b> ${escapeHtml(o.name)}</p>
-      <p><b>الهاتف:</b> ${escapeHtml(o.phone)}</p>
-      <p><b>العنوان:</b> ${escapeHtml(o.address)}</p>
-      <p><b>المنتجات:</b> ${o.items.map(escapeHtml).join("، ")}</p>
-      <p><b>المجموع:</b> ${money(o.total)}</p>
+      <div class="orderHead"><b>طلب #${o.id}</b><span class="badge">${escapeHtml(o.status||"جديد")}</span></div>
+      <p><b>الحريف:</b> ${escapeHtml(o.customer_name)}</p>
+      <p><b>الهاتف:</b> ${escapeHtml(o.customer_phone)}</p>
+      <p><b>العنوان:</b> ${escapeHtml(o.customer_address)}</p>
+      <p><b>المجموع:</b> ${money(o.total_tnd)}</p>
       <label>حالة الطلب</label>
-      <select onchange="changeStatus(${i},this.value)">
+      <select onchange="changeStatus(${o.id},this.value)">
         ${["جديد","تم التأكيد","خرج للتوصيل","تم التسليم","رفض الاستلام","ملغى"].map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}
       </select>
-      <label>مصاريف التوصيل الفعلية (للمتابعة الداخلية)</label>
-      <input type="number" min="0" value="${o.deliveryCost||0}" onchange="changeDeliveryCost(${i},this.value)">
-      <label>ملاحظة الإدارة</label>
-      <input value="${escapeAttr(o.note||"")}" onchange="changeNote(${i},this.value)" placeholder="مثال: رفض الاستلام بعد خروج الموزع">
-      <button class="danger" onclick="deleteOrder(${i})">حذف السجل</button>
-    </div>
-  `).join("");
+    </div>`).join("");
 }
+async function changeStatus(id,status){
+  const {error}=await sb.from("orders").update({status}).eq("id",id);
+  if(error){alert("تعذر تحديث الحالة. تأكد من صلاحيات الإدارة.");console.error(error);return;}
+  renderAdmin();
+}
+function escapeHtml(s){return String(s??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+function escapeAttr(s){return escapeHtml(s).replace(/\`/g,"&#96;");}
 
-function changeStatus(i,status){
-  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
-  orders[i].status=status; localStorage.setItem("ghaddab_orders",JSON.stringify(orders)); renderAdmin();
-}
-function changeDeliveryCost(i,value){
-  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
-  orders[i].deliveryCost=Number(value)||0; localStorage.setItem("ghaddab_orders",JSON.stringify(orders));
-}
-function changeNote(i,value){
-  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
-  orders[i].note=value; localStorage.setItem("ghaddab_orders",JSON.stringify(orders));
-}
-function deleteOrder(i){
-  if(!confirm("هل تريد حذف هذا السجل؟"))return;
-  const orders=JSON.parse(localStorage.getItem("ghaddab_orders")||"[]");
-  orders.splice(i,1); localStorage.setItem("ghaddab_orders",JSON.stringify(orders)); renderAdmin();
-}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
-function escapeAttr(s){return escapeHtml(s);}
-
-renderProducts();
 renderCart();
-  const wa=document.createElement("a");
+loadProducts();
+
+const wa=document.createElement("a");
 wa.href="https://wa.me/21625475226?text="+encodeURIComponent("مرحبا GhaddabGo 👋 أريد الاستفسار عن منتج.");
-wa.target="_blank";
-wa.textContent="💬 WhatsApp";
+wa.target="_blank";wa.rel="noopener";wa.textContent="💬 WhatsApp";
 wa.style="position:fixed;bottom:20px;left:20px;background:#25D366;color:white;padding:14px 20px;border-radius:30px;text-decoration:none;font-weight:bold;z-index:9999;";
 document.body.appendChild(wa);
 </script>
