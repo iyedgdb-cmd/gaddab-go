@@ -307,7 +307,11 @@ footer{
 
 <footer>© 2026 GhaddabGo — متجر تونسي</footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = "https://jexlfdnwlgtflexjeza.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PX7R316oR8pXP5tXTYBdsw_N5uGgU56";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const products = [
   {id:1,name:"قميص عصري",price:45,icon:"👕"},
   {id:2,name:"حذاء رياضي",price:89,icon:"👟"},
