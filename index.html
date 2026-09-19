@@ -234,7 +234,25 @@ footer{
     <p>متجر تونسي حديث — اطلب بسهولة وسنؤكد الطلب قبل إرساله للتوصيل.</p>
   </div>
 </div>
+<section class="wrap">
+  <div class="panel" style="margin-top:20px">
+    <input
+      id="searchBox"
+      type="search"
+      placeholder="🔎 ابحث عن منتج..."
+      oninput="filterProducts()"
+      style="margin:0"
+    >
 
+    <div style="display:flex;gap:8px;overflow:auto;padding-top:12px">
+      <button onclick="filterCategory('all')">الكل</button>
+      <button onclick="filterCategory('ملابس')">👕 ملابس</button>
+      <button onclick="filterCategory('إلكترونيات')">📱 إلكترونيات</button>
+      <button onclick="filterCategory('أحذية')">👟 أحذية</button>
+      <button onclick="filterCategory('منزل')">🏠 منزل</button>
+    </div>
+  </div>
+</section>
 <section class="wrap">
   <h2>المنتجات</h2>
   <div class="grid" id="products"></div>
