@@ -245,11 +245,11 @@ footer{
     >
 
     <div style="display:flex;gap:8px;overflow:auto;padding-top:12px">
-      <button onclick="filterCategory('all')">الكل</button>
-      <button onclick="filterCategory('ملابس')">👕 ملابس</button>
-      <button onclick="filterCategory('إلكترونيات')">📱 إلكترونيات</button>
-      <button onclick="filterCategory('أحذية')">👟 أحذية</button>
-      <button onclick="filterCategory('منزل')">🏠 منزل</button>
+      <button data-category="all" onclick="filterCategory('all')">الكل</button>
+      <button data-category="ملابس" onclick="filterCategory('ملابس')">👕 ملابس</button>
+      <button data-category="إلكترونيات" onclick="filterCategory('إلكترونيات')">📱 إلكترونيات</button>
+      <button data-category="أحذية" onclick="filterCategory('أحذية')">👟 أحذية</button>
+      <button data-category="منزل" onclick="filterCategory('منزل')">🏠 منزل</button>
     </div>
   </div>
 </section>
@@ -327,6 +327,8 @@ const SUPABASE_KEY = "sb_publishable_PX7R316oR8pXP5tXTYBdsw_N5uGgU56";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let products = [];
+let categories = [];
+let selectedCategory = "all";
 let cart = JSON.parse(localStorage.getItem("ghaddab_cart") || "[]");
 
 function saveCart(){localStorage.setItem("ghaddab_cart",JSON.stringify(cart));}
@@ -334,22 +336,46 @@ function money(n){return Number(n||0).toFixed(0)+" د.ت";}
 function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:"smooth"});}
 
 async function loadProducts(){
-  const {data,error}=await sb.from("products")
-    .select("id,name,slug,description,price_tnd,stock,category_id,image_url,active")
-    .eq("active",true)
-    .order("created_at",{ascending:false});
-  if(error){
-    console.error(error);
-    document.getElementById("products").innerHTML='<div class="notice">تعذر تحميل المنتجات من قاعدة البيانات. تأكد من سياسات RLS في Supabase.</div>';
+  const [productsResult,categoriesResult]=await Promise.all([
+    sb.from("products")
+      .select("id,name,slug,description,price_tnd,stock,category_id,image_url,active")
+      .eq("active",true)
+      .order("created_at",{ascending:false}),
+    sb.from("categories")
+      .select("id,name")
+      .order("name")
+  ]);
+
+  if(productsResult.error){
+    console.error(productsResult.error);
+    document.getElementById("products").innerHTML='<div class="notice">تعذر تحميل المنتجات من قاعدة البيانات. تأكد من أن جدول products موجود وسياسات RLS تسمح بالقراءة.</div>';
     return;
   }
-  products=(data||[]).map(p=>({...p,price:Number(p.price_tnd||0)}));
+
+  if(categoriesResult.error){
+    console.warn("تعذر تحميل categories:",categoriesResult.error);
+    categories=[];
+  }else{
+    categories=categoriesResult.data||[];
+  }
+
+  const categoryMap=new Map(categories.map(c=>[String(c.id),c.name]));
+  products=(productsResult.data||[]).map(p=>({
+    ...p,
+    price:Number(p.price_tnd||0),
+    category_name:categoryMap.get(String(p.category_id))||""
+  }));
   renderProducts();
 }
 
 function renderProducts(){
   const q=(document.getElementById("searchBox").value||"").trim().toLowerCase();
-  const list=products.filter(p=>!q || [p.name,p.description,p.slug].filter(Boolean).join(" ").toLowerCase().includes(q));
+  const list=products.filter(p=>{
+    const text=[p.name,p.description,p.slug,p.category_name].filter(Boolean).join(" ").toLowerCase();
+    const matchesSearch=!q || text.includes(q);
+    const matchesCategory=selectedCategory==="all" || String(p.category_name).trim()===String(selectedCategory).trim();
+    return matchesSearch && matchesCategory;
+  });
   const box=document.getElementById("products");
   if(!list.length){box.innerHTML='<div class="notice">لا توجد منتجات متاحة حالياً.</div>';return;}
   box.innerHTML=list.map(p=>{
@@ -366,7 +392,11 @@ function renderProducts(){
   }).join("");
 }
 function filterProducts(){renderProducts();}
-function filterCategory(){renderProducts();}
+function filterCategory(category){
+  selectedCategory=category||"all";
+  document.querySelectorAll("[data-category]").forEach(b=>b.classList.toggle("active",b.dataset.category===selectedCategory));
+  renderProducts();
+}
 
 function addToCart(id){
   const p=products.find(x=>String(x.id)===String(id));
