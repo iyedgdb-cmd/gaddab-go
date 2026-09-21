@@ -3,636 +3,1751 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+
   <title>GhaddabGo | متجر تونسي</title>
-  <meta name="description" content="GhaddabGo - متجر إلكتروني تونسي">
-<style>
-:root{
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --primary:#111827;
-  --accent:#16a34a;
-  --accent2:#f59e0b;
-  --text:#111827;
-  --muted:#64748b;
-  --line:#e2e8f0;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,Tahoma,sans-serif;
-  direction:rtl;
-}
-.wrap{
-  width:min(1100px,calc(100% - 28px));
-  margin:auto;
-}
-header{
-  background:linear-gradient(135deg,#111827,#1f2937);
-  color:#fff;
-  position:sticky;
-  top:0;
-  z-index:20;
-  box-shadow:0 4px 20px #0002;
-}
-nav{
-  min-height:70px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-.logo{
-  font-size:25px;
-  font-weight:900;
-}
-.cartBtn{
-  background:#fff;
-  color:#111827;
-  border:0;
-  border-radius:14px;
-  padding:11px 16px;
-  font-weight:800;
-  cursor:pointer;
-}
-.hero{
-  margin-top:20px;
-  padding:45px 20px;
-  border-radius:25px;
-  text-align:center;
-  color:#fff;
-  background:linear-gradient(135deg,#16a34a,#15803d);
-  box-shadow:0 10px 30px #16a34a33;
-}
-.hero h1{
-  margin:0 0 12px;
-  font-size:36px;
-}
-.hero p{
-  margin:0;
-  font-size:18px;
-  line-height:1.8;
-}
-section{
-  padding:25px 0;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:18px;
-}
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:18px;
-  box-shadow:0 5px 18px #0000000a;
-  transition:.2s;
-}
-.card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 10px 25px #00000015;
-}
-.card h3{
-  margin:8px 0;
-  font-size:19px;
-}
-.card p{
-  color:var(--muted);
-  line-height:1.6;
-}
-.price{
-  color:#15803d;
-  font-size:21px;
-  font-weight:900;
-  margin:12px 0;
-}
-.card button{
-  width:100%;
-  border:0;
-  border-radius:13px;
-  padding:12px;
-  background:#111827;
-  color:#fff;
-  font-size:16px;
-  font-weight:800;
-  cursor:pointer;
-}
-input,textarea,select{
-  width:100%;
-  padding:14px;
-  margin:6px 0 12px;
-  border:1px solid #cbd5e1;
-  border-radius:13px;
-  background:#fff;
-  font-size:16px;
-}
-label{
-  font-weight:800;
-  display:block;
-  margin-top:8px;
-}
-.notice{
-  background:#fff7ed;
-  border:1px solid #fdba74;
-  color:#9a3412;
-  padding:16px;
-  border-radius:16px;
-  line-height:1.8;
-}
-.success{
-  background:#ecfdf5;
-  border:1px solid #6ee7b7;
-  color:#166534;
-  padding:16px;
-  border-radius:16px;
-  line-height:1.8;
-}
-.danger{
-  background:#fee2e2;
-  color:#991b1b;
-  padding:14px;
-  border-radius:14px;
-}
-.order{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:18px;
-  margin:12px 0;
-}
-.orderHead{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#dcfce7;
-  color:#166534;
-  font-weight:800;
-}
-.adminBtn{
-  margin-top:10px;
-  width:100%;
-  background:#374151;
-  color:#fff;
-  border:0;
-  border-radius:14px;
-  padding:14px;
-  font-size:17px;
-  font-weight:800;
-}
-footer{
-  text-align:center;
-  padding:35px 10px;
-  color:var(--muted);
-}
-.hidden{display:none}
-.cartLine{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  padding:12px 0;
-  border-bottom:1px solid var(--line);
-}
-@media(max-width:800px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-  .hero h1{font-size:29px}
-}
-@media(max-width:520px){
-  .wrap{width:min(100% - 20px,1100px)}
-  .grid{grid-template-columns:1fr}
-  .logo{font-size:21px}
-  .hero{padding:32px 15px}
-  .hero h1{font-size:27px}
-  .hero p{font-size:16px}
-  .card{padding:16px}
-}
-</style>
-</head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta name="description" content="GhaddabGo - متجر تونسي لكل ما يستحق الشراء">
 
-<script>
-const SUPABASE_URL = "https://jexfdnwnlgftlexjeza.supabase.co";
-const SUPABASE_KEY = "sb_publishable_PX7R316oR8pXP5tXTYBdsw_N5uGgU56";
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#fff;
+      --text:#111827;
+      --muted:#64748b;
+      --green:#16a34a;
+      --green2:#15803d;
+      --dark:#111827;
+      --line:#e2e8f0;
+      --danger:#dc2626;
+    }
 
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+    *{
+      box-sizing:border-box;
+    }
 
-async function loadProducts() {
-  const { data, error } = await supabase
-    .from("products")
-    .select("id,name,slug,description,price,stock,active")
-    .eq("active", true)
-    .order("id");
+    html{
+      scroll-behavior:smooth;
+    }
 
-  if (error) {
-    console.error("Supabase error:", error);
-    return;
-  }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,Tahoma,sans-serif;
+      direction:rtl;
+    }
 
-  let grid = document.getElementById("products-grid");
+    .wrap{
+      width:min(1100px,calc(100% - 24px));
+      margin:auto;
+    }
 
-  if (!grid) {
-    grid = document.createElement("div");
-    grid.id = "products-grid";
-    grid.style.cssText =
-      "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;padding:20px;";
-    document.body.appendChild(grid);
-  }
+    header{
+      background:linear-gradient(135deg,#111827,#1f2937);
+      color:white;
+      position:sticky;
+      top:0;
+      z-index:100;
+      box-shadow:0 4px 20px #0002;
+    }
 
-  grid.innerHTML = "";
+    nav{
+      min-height:70px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
 
-  data.forEach(product => {
-    const card = document.createElement("div");
+    .logo{
+      font-size:25px;
+      font-weight:900;
+    }
 
-    card.style.cssText =
-      "background:white;border-radius:16px;padding:18px;box-shadow:0 4px 15px rgba(0,0,0,.08);";
+    button{
+      cursor:pointer;
+      border:0;
+    }
 
-    card.innerHTML = `
-      <h3>${product.name || product.slug}</h3>
-      <p>${product.description || ""}</p>
-      <strong>${Number(product.price).toFixed(2)} DT</strong>
-      <p>Stock: ${product.stock}</p>
-      <button
-        onclick="addToCart(${product.id})"
-        style="padding:10px 16px;border:0;border-radius:10px;background:#16a34a;color:white;">
-        Ajouter au panier
-      </button>
-    `;
+    .cartBtn{
+      background:white;
+      color:#111827;
+      border-radius:14px;
+      padding:11px 16px;
+      font-weight:900;
+    }
 
-    grid.appendChild(card);
-  });
-}
+    .hero{
+      margin-top:18px;
+      padding:45px 20px;
+      border-radius:25px;
+      text-align:center;
+      color:white;
+      background:linear-gradient(135deg,var(--green),var(--green2));
+      box-shadow:0 10px 30px #16a34a33;
+    }
 
-function addToCart(id) {
-  alert("Produit ajouté au panier ✅");
-}
+    .hero h1{
+      margin:0 0 12px;
+      font-size:36px;
+    }
 
-loadProducts();
-</script>
+    .hero p{
+      margin:0;
+      font-size:18px;
+      line-height:1.8;
+    }
+
+    section{
+      padding:24px 0;
+    }
+
+    .panel{
+      background:white;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:20px;
+      box-shadow:0 5px 18px #0000000a;
+      margin-bottom:20px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+    }
+
+    .card{
+      background:white;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+      box-shadow:0 5px 18px #0000000a;
+      transition:.2s;
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      box-shadow:0 10px 25px #00000015;
+    }
+
+    .productIcon{
+      font-size:65px;
+      text-align:center;
+      padding:25px 5px;
+      background:#f0fdf4;
+      border-radius:16px;
+    }
+
+    .card h3{
+      margin:10px 0;
+      font-size:19px;
+    }
+
+    .card p{
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .price{
+      color:var(--green2);
+      font-size:21px;
+      font-weight:900;
+      margin:12px 0;
+    }
+
+    .card button{
+      width:100%;
+      padding:12px;
+      border-radius:13px;
+      background:var(--dark);
+      color:white;
+      font-size:16px;
+      font-weight:800;
+    }
+
+    .card button:disabled{
+      background:#94a3b8;
+      cursor:not-allowed;
+    }
+
+    input,
+    textarea,
+    select{
+      width:100%;
+      padding:14px;
+      margin:6px 0 12px;
+      border:1px solid #cbd5e1;
+      border-radius:13px;
+      background:white;
+      font-size:16px;
+    }
+
+    textarea{
+      min-height:110px;
+      resize:vertical;
+    }
+
+    label{
+      font-weight:800;
+      display:block;
+      margin-top:8px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .submit{
+      width:100%;
+      padding:15px;
+      border-radius:14px;
+      background:var(--green);
+      color:white;
+      font-size:17px;
+      font-weight:900;
+    }
+
+    .secondary{
+      padding:10px 14px;
+      border-radius:10px;
+      background:#e2e8f0;
+      color:#111827;
+      font-weight:800;
+    }
+
+    .categoryBtn{
+      white-space:nowrap;
+      padding:10px 15px;
+      border-radius:12px;
+      background:#e2e8f0;
+      font-weight:800;
+    }
+
+    .categoryBtn.active{
+      background:var(--green);
+      color:white;
+    }
+
+    .notice{
+      background:#fff7ed;
+      border:1px solid #fdba74;
+      color:#9a3412;
+      padding:16px;
+      border-radius:16px;
+      line-height:1.8;
+      margin:10px 0;
+    }
+
+    .success{
+      background:#ecfdf5;
+      border:1px solid #6ee7b7;
+      color:#166534;
+      padding:16px;
+      border-radius:16px;
+      line-height:1.8;
+      margin:10px 0;
+    }
+
+    .danger{
+      background:#fee2e2;
+      color:#991b1b;
+      padding:14px;
+      border-radius:14px;
+      margin:10px 0;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .hidden{
+      display:none !important;
+    }
+
+    .cartLine{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:12px 0;
+      border-bottom:1px solid var(--line);
+    }
+
+    .order{
+      background:white;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+      margin:12px 0;
+    }
+
+    .orderHead{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#dcfce7;
+      color:#166534;
+      font-weight:800;
+    }
+
+    .adminBtn{
+      width:100%;
+      background:#374151;
+      color:white;
+      border-radius:14px;
+      padding:14px;
+      font-size:17px;
+      font-weight:800;
+    }
+
+    footer{
+      text-align:center;
+      padding:35px 10px;
+      color:var(--muted);
+    }
+
+    @media(max-width:800px){
+      .grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .hero h1{
+        font-size:29px;
+      }
+    }
+
+    @media(max-width:520px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .row{
+        grid-template-columns:1fr;
+      }
+
+      .logo{
+        font-size:21px;
+      }
+
+      .hero{
+        padding:32px 15px;
+      }
+
+      .hero h1{
+        font-size:27px;
+      }
+
+      .hero p{
+        font-size:16px;
+      }
+    }
+  </style>
+</head>
+
 <body>
+
 <header>
   <div class="wrap">
     <nav>
       <div class="logo">🛍️ GhaddabGo</div>
-      <button class="cartBtn" onclick="scrollToId('order')">السلة: <span id="cartCount">0</span></button>
+
+      <button class="cartBtn" onclick="scrollToId('order')">
+        🛒 السلة:
+        <span id="cartCount">0</span>
+      </button>
     </nav>
   </div>
 </header>
 
-<div class="hero">
+<main>
+
   <div class="wrap">
-    <h1>مرحبا بك في GhaddabGo 🇹🇳</h1>
-    <p>متجر تونسي حديث — اطلب بسهولة وسنؤكد الطلب قبل إرساله للتوصيل.</p>
-  </div>
-</div>
-<section class="wrap">
-  <div class="panel" style="margin-top:20px">
-    <input
-      id="searchBox"
-      type="search"
-      placeholder="🔎 ابحث عن منتج..."
-      oninput="filterProducts()"
-      style="margin:0"
-    >
-
-    <div style="display:flex;gap:8px;overflow:auto;padding-top:12px">
-      <button data-category="all" onclick="filterCategory('all')">الكل</button>
-      <button data-category="ملابس" onclick="filterCategory('ملابس')">👕 ملابس</button>
-      <button data-category="إلكترونيات" onclick="filterCategory('إلكترونيات')">📱 إلكترونيات</button>
-      <button data-category="أحذية" onclick="filterCategory('أحذية')">👟 أحذية</button>
-      <button data-category="منزل" onclick="filterCategory('منزل')">🏠 منزل</button>
+    <div class="hero">
+      <h1>مرحبا بك في GhaddabGo 🇹🇳</h1>
+      <p>
+        متجر تونسي شامل — خضر، غلال، ملابس، إلكترونيات، منزل وكل ما يستحق الشراء.
+      </p>
     </div>
   </div>
-</section>
-<section class="wrap">
-  <h2>المنتجات</h2>
-  <div class="grid" id="products"></div>
 
-  <div class="panel" id="order">
-    <h2>🛒 طلبك</h2>
-    <div id="cart"></div>
-    <div id="cartTotal" class="price">المجموع: 0 د.ت</div>
+  <section class="wrap">
 
-    <form id="orderForm">
-      <div class="row">
-        <div>
-          <label>الاسم واللقب</label>
-          <input id="name" required placeholder="مثال: محمد علي">
-        </div>
-        <div>
-          <label>الهاتف</label>
-          <input id="phone" required inputmode="tel" placeholder="مثال: 20 000 000">
-        </div>
-      </div>
+    <div class="panel">
 
-      <label>العنوان</label>
-      <textarea id="address" required placeholder="الولاية، المدينة، الشارع..."></textarea>
+      <input
+        id="searchBox"
+        type="search"
+        placeholder="🔎 ابحث عن منتج..."
+        oninput="filterProducts()"
+      >
 
+      <div
+        id="categories"
+        style="display:flex;gap:8px;overflow:auto;padding-top:8px"
+      ></div>
+
+    </div>
+
+    <h2>🛍️ المنتجات</h2>
+
+    <div class="grid" id="products">
       <div class="notice">
-        <b>مهم:</b> قبل إرسال الطلب سنتصل بك لتأكيده. حالات الإلغاء والإرجاع تخضع لحقوق المستهلك والقواعد القانونية المعمول بها في تونس.
+        جاري تحميل المنتجات...
+      </div>
+    </div>
+
+  </section>
+
+  <section class="wrap">
+
+    <div class="panel" id="order">
+
+      <h2>🛒 طلبك</h2>
+
+      <div id="cart"></div>
+
+      <div id="cartTotal" class="price">
+        المجموع: 0 د.ت
       </div>
 
-      <label style="display:flex;gap:8px;align-items:flex-start;font-weight:600">
-        <input id="confirm" type="checkbox" required style="width:auto;margin:3px 0 0">
-        أؤكد أن بيانات الاتصال والعنوان صحيحة وأرغب في تأكيد الطلب.
-      </label>
+      <form id="orderForm">
 
-      <button class="submit" type="submit">إرسال الطلب للتأكيد</button>
-    </form>
-    <div id="message"></div>
-  </div>
+        <div class="row">
 
-  <div class="panel">
-    <h2>👨‍💼 إدارة المتجر</h2>
-    <p class="muted">دخول المدير الفعلي محمي بحساب Supabase وصلاحية المدير.</p>
-    <button class="adminBtn" onclick="openAdmin()">دخول الإدارة</button>
-  </div>
+          <div>
+            <label>الاسم واللقب</label>
+            <input
+              id="name"
+              required
+              placeholder="مثال: محمد علي"
+            >
+          </div>
 
-  <div class="panel hidden" id="adminPanel">
-    <h2>لوحة الإدارة</h2>
-    <div id="adminLogin">
-      <p class="muted">أدخل بريد المدير وكلمة المرور.</p>
-      <label>بريد المدير</label>
-      <input id="adminEmail" type="email" autocomplete="username" placeholder="admin@example.com">
-      <label>كلمة المرور</label>
-      <input id="adminPassword" type="password" autocomplete="current-password" placeholder="••••••••">
-      <button class="submit" type="button" onclick="adminLogin()">تسجيل الدخول</button>
-      <div id="adminLoginMessage"></div>
+          <div>
+            <label>الهاتف</label>
+            <input
+              id="phone"
+              required
+              inputmode="tel"
+              placeholder="مثال: 20 000 000"
+            >
+          </div>
+
+        </div>
+
+        <label>العنوان</label>
+
+        <textarea
+          id="address"
+          required
+          placeholder="الولاية، المدينة، الشارع..."
+        ></textarea>
+
+        <div class="notice">
+          <b>مهم:</b>
+          قبل إرسال الطلب سنتصل بك لتأكيده.
+          الدفع عند الاستلام.
+        </div>
+
+        <label
+          style="display:flex;gap:8px;align-items:flex-start;font-weight:600"
+        >
+          <input
+            id="confirm"
+            type="checkbox"
+            required
+            style="width:auto;margin:3px 0 0"
+          >
+
+          أؤكد أن بيانات الاتصال والعنوان صحيحة وأرغب في تأكيد الطلب.
+        </label>
+
+        <button class="submit" type="submit">
+          إرسال الطلب للتأكيد
+        </button>
+
+      </form>
+
+      <div id="message"></div>
+
     </div>
-    <div id="adminContent" class="hidden">
-      <div class="success">تم تسجيل دخول المدير فعلياً ✅</div>
-      <p class="muted">الحالات: جديد → تم التأكيد → خرج للتوصيل → تم التسليم / رفض الاستلام / ملغى.</p>
-      <div id="adminOrders"></div>
-      <button class="secondary" type="button" onclick="adminLogout()">تسجيل الخروج</button>
+
+    <div class="panel">
+
+      <h2>👨‍💼 إدارة المتجر</h2>
+
+      <p class="muted">
+        لوحة الإدارة الخاصة بمدير GhaddabGo.
+      </p>
+
+      <button class="adminBtn" onclick="openAdmin()">
+        دخول الإدارة
+      </button>
+
     </div>
-    <button class="secondary" type="button" onclick="closeAdmin()">إغلاق</button>
-  </div>
-</section>
 
-<footer>© 2026 GhaddabGo — متجر تونسي</footer>
+    <div class="panel hidden" id="adminPanel">
 
+      <h2>لوحة الإدارة</h2>
+
+      <div id="adminLogin">
+
+        <p class="muted">
+          أدخل بريد المدير وكلمة المرور.
+        </p>
+
+        <label>بريد المدير</label>
+
+        <input
+          id="adminEmail"
+          type="email"
+          autocomplete="username"
+          placeholder="admin@example.com"
+        >
+
+        <label>كلمة المرور</label>
+
+        <input
+          id="adminPassword"
+          type="password"
+          autocomplete="current-password"
+          placeholder="••••••••"
+        >
+
+        <button
+          class="submit"
+          type="button"
+          onclick="adminLogin()"
+        >
+          تسجيل الدخول
+        </button>
+
+        <div id="adminLoginMessage"></div>
+
+      </div>
+
+      <div id="adminContent" class="hidden">
+
+        <div class="success">
+          تم تسجيل دخول المدير فعلياً ✅
+        </div>
+
+        <p class="muted">
+          إدارة الطلبات والحالات.
+        </p>
+
+        <div id="adminOrders"></div>
+
+        <button
+          class="secondary"
+          type="button"
+          onclick="adminLogout()"
+        >
+          تسجيل الخروج
+        </button>
+
+      </div>
+
+      <button
+        class="secondary"
+        type="button"
+        onclick="closeAdmin()"
+        style="margin-top:10px"
+      >
+        إغلاق
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  © 2026 GhaddabGo — متجر تونسي 🇹🇳
+</footer>
+
+
+<!-- Supabase مرة واحدة فقط -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-const SUPABASE_URL = "https://jexlfdnwlgtflexjeza.supabase.co";
-const SUPABASE_KEY = "sb_publishable_PX7R316oR8pXP5tXTYBdsw_N5uGgU56";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const SUPABASE_URL =
+  "https://jexlfdnwnlgftlexjeza.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_PX7R316oR8pXP5tXTYBdsw_N5uGgU56";
+
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
 
 let products = [];
 let categories = [];
 let selectedCategory = "all";
-let cart = JSON.parse(localStorage.getItem("ghaddab_cart") || "[]");
 
-function saveCart(){localStorage.setItem("ghaddab_cart",JSON.stringify(cart));}
-function money(n){return Number(n||0).toFixed(0)+" د.ت";}
-function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:"smooth"});}
+let cart = JSON.parse(
+  localStorage.getItem("ghaddab_cart") || "[]"
+);
+
+
+function saveCart(){
+  localStorage.setItem(
+    "ghaddab_cart",
+    JSON.stringify(cart)
+  );
+}
+
+
+function money(value){
+  return Number(value || 0).toFixed(2) + " د.ت";
+}
+
+
+function scrollToId(id){
+  const element = document.getElementById(id);
+
+  if(element){
+    element.scrollIntoView({
+      behavior:"smooth"
+    });
+  }
+}
+
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/[&<>"]/g,function(char){
+      return {
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;"
+      }[char];
+    });
+}
+
+
+function escapeAttr(value){
+  return escapeHtml(value)
+    .replace(/`/g,"&#96;");
+}
+
+
+/* =========================
+   تحميل المنتجات
+========================= */
 
 async function loadProducts(){
-  const [productsResult,categoriesResult]=await Promise.all([
-    sb.from("products")
-      .select("id,name,slug,description,price_tnd,stock,category_id,image_url,active")
-      .eq("active",true)
-      .order("created_at",{ascending:false}),
-    sb.from("categories")
-      .select("id,name")
-      .order("name")
-  ]);
+
+  const productsResult = await sb
+    .from("products")
+    .select(
+      "id,name,slug,description,price,stock,category_id,active"
+    )
+    .eq("active",true)
+    .order("id");
 
   if(productsResult.error){
-    console.error(productsResult.error);
-    document.getElementById("products").innerHTML='<div class="notice">تعذر تحميل المنتجات من قاعدة البيانات. تأكد من أن جدول products موجود وسياسات RLS تسمح بالقراءة.</div>';
+
+    console.error(
+      "Supabase products error:",
+      productsResult.error
+    );
+
+    document.getElementById("products").innerHTML =
+      '<div class="notice">تعذر تحميل المنتجات. تأكد من صلاحيات القراءة في Supabase.</div>';
+
     return;
   }
+
+
+  const categoriesResult = await sb
+    .from("categories")
+    .select("id,name")
+    .order("name");
+
 
   if(categoriesResult.error){
-    console.warn("تعذر تحميل categories:",categoriesResult.error);
-    categories=[];
+
+    console.warn(
+      "Categories error:",
+      categoriesResult.error
+    );
+
+    categories = [];
+
   }else{
-    categories=categoriesResult.data||[];
+
+    categories =
+      categoriesResult.data || [];
+
   }
 
-  const categoryMap=new Map(categories.map(c=>[String(c.id),c.name]));
-  products=(productsResult.data||[]).map(p=>({
-    ...p,
-    price:Number(p.price_tnd||0),
-    category_name:categoryMap.get(String(p.category_id))||""
-  }));
+
+  const categoryMap = new Map(
+    categories.map(function(category){
+      return [
+        String(category.id),
+        category.name
+      ];
+    })
+  );
+
+
+  products =
+    (productsResult.data || []).map(function(product){
+
+      return {
+        ...product,
+
+        price:
+          Number(product.price || 0),
+
+        category_name:
+          categoryMap.get(
+            String(product.category_id)
+          ) || ""
+      };
+
+    });
+
+
+  renderCategories();
   renderProducts();
 }
+
+
+/* =========================
+   التصنيفات
+========================= */
+
+function renderCategories(){
+
+  const box =
+    document.getElementById("categories");
+
+  let html = `
+    <button
+      class="categoryBtn active"
+      data-category="all"
+      onclick="filterCategory('all')"
+    >
+      🛍️ الكل
+    </button>
+  `;
+
+
+  categories.forEach(function(category){
+
+    html += `
+      <button
+        class="categoryBtn"
+        data-category="${escapeAttr(category.name)}"
+        onclick="filterCategory('${escapeAttr(category.name)}')"
+      >
+        ${escapeHtml(category.name)}
+      </button>
+    `;
+
+  });
+
+
+  box.innerHTML = html;
+}
+
+
+function filterCategory(category){
+
+  selectedCategory =
+    category || "all";
+
+
+  document
+    .querySelectorAll("[data-category]")
+    .forEach(function(button){
+
+      button.classList.toggle(
+        "active",
+        button.dataset.category ===
+        selectedCategory
+      );
+
+    });
+
+
+  renderProducts();
+}
+
+
+/* =========================
+   عرض المنتجات
+========================= */
 
 function renderProducts(){
-  const q=(document.getElementById("searchBox").value||"").trim().toLowerCase();
-  const list=products.filter(p=>{
-    const text=[p.name,p.description,p.slug,p.category_name].filter(Boolean).join(" ").toLowerCase();
-    const matchesSearch=!q || text.includes(q);
-    const matchesCategory=selectedCategory==="all" || String(p.category_name).trim()===String(selectedCategory).trim();
-    return matchesSearch && matchesCategory;
-  });
-  const box=document.getElementById("products");
-  if(!list.length){box.innerHTML='<div class="notice">لا توجد منتجات متاحة حالياً.</div>';return;}
-  box.innerHTML=list.map(p=>{
-    const disabled=Number(p.stock||0)<=0;
-    return `
-      <div class="card">
-        ${p.image_url ? `<img src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" style="width:100%;height:190px;object-fit:cover;border-radius:15px">` : '<div style="font-size:64px;text-align:center;padding:30px">🛍️</div>'}
-        <h3>${escapeHtml(p.name)}</h3>
-        ${p.description ? `<p>${escapeHtml(p.description)}</p>` : ""}
-        <div class="price">${money(p.price_tnd)}</div>
-        <small>المخزون: ${Number(p.stock||0)}</small>
-        <button class="add" ${disabled?"disabled":""} onclick="addToCart('${p.id}')">${disabled?"غير متوفر":"أضف إلى السلة"}</button>
-      </div>`;
-  }).join("");
+
+  const search =
+    (
+      document.getElementById("searchBox").value
+      || ""
+    )
+    .trim()
+    .toLowerCase();
+
+
+  const list =
+    products.filter(function(product){
+
+      const text = [
+        product.name,
+        product.description,
+        product.slug,
+        product.category_name
+      ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+
+      const matchesSearch =
+        !search ||
+        text.includes(search);
+
+
+      const matchesCategory =
+        selectedCategory === "all" ||
+        String(product.category_name).trim() ===
+        String(selectedCategory).trim();
+
+
+      return (
+        matchesSearch &&
+        matchesCategory
+      );
+
+    });
+
+
+  const box =
+    document.getElementById("products");
+
+
+  if(!list.length){
+
+    box.innerHTML =
+      '<div class="notice">لا توجد منتجات متاحة حالياً.</div>';
+
+    return;
+  }
+
+
+  box.innerHTML =
+    list.map(function(product){
+
+      const stock =
+        Number(product.stock || 0);
+
+      const disabled =
+        stock <= 0;
+
+
+      return `
+
+        <div class="card">
+
+          <div class="productIcon">
+            🛍️
+          </div>
+
+          <h3>
+            ${escapeHtml(product.name)}
+          </h3>
+
+          ${
+            product.category_name
+              ? `<small class="muted">
+                   ${escapeHtml(product.category_name)}
+                 </small>`
+              : ""
+          }
+
+          ${
+            product.description
+              ? `<p>
+                   ${escapeHtml(product.description)}
+                 </p>`
+              : ""
+          }
+
+          <div class="price">
+            ${money(product.price)}
+          </div>
+
+          <small>
+            المخزون: ${stock}
+          </small>
+
+          <br><br>
+
+          <button
+            ${disabled ? "disabled" : ""}
+            onclick="addToCart('${product.id}')"
+          >
+            ${
+              disabled
+                ? "غير متوفر"
+                : "أضف إلى السلة"
+            }
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
 }
-function filterProducts(){renderProducts();}
-function filterCategory(category){
-  selectedCategory=category||"all";
-  document.querySelectorAll("[data-category]").forEach(b=>b.classList.toggle("active",b.dataset.category===selectedCategory));
+
+
+function filterProducts(){
   renderProducts();
 }
 
+
+/* =========================
+   السلة
+========================= */
+
 function addToCart(id){
-  const p=products.find(x=>String(x.id)===String(id));
-  if(!p || Number(p.stock||0)<=0)return;
-  cart.push({id:p.id,name:p.name,price:Number(p.price_tnd||0),image_url:p.image_url||null});
-  saveCart();renderCart();scrollToId("order");
-}
-function removeFromCart(i){cart.splice(i,1);saveCart();renderCart();}
-function renderCart(){
-  document.getElementById("cartCount").textContent=cart.length;
-  const box=document.getElementById("cart");
-  box.innerHTML=cart.length ? cart.map((p,i)=>`
-    <div class="cartLine"><span>🛍️ ${escapeHtml(p.name)}</span><span>${money(p.price)} <button class="secondary" onclick="removeFromCart(${i})">حذف</button></span></div>`).join("") :
-    '<p class="muted">السلة فارغة. اختر منتجاً للمتابعة.</p>';
-  document.getElementById("cartTotal").textContent="المجموع: "+money(cart.reduce((s,p)=>s+Number(p.price||0),0));
-}
 
-document.getElementById("orderForm").addEventListener("submit",async function(e){
-  e.preventDefault();
-  if(!cart.length){alert("أضف منتجاً واحداً على الأقل.");return;}
-  const name=document.getElementById("name").value.trim();
-  const phone=document.getElementById("phone").value.trim();
-  const address=document.getElementById("address").value.trim();
-  const total=cart.reduce((s,p)=>s+Number(p.price||0),0);
-  const orderNumber="GG-"+Date.now().toString().slice(-8);
-  const messageBox=document.getElementById("message");
+  const product =
+    products.find(function(item){
 
-  const {data:order,error}=await sb.from("orders").insert({
-    customer_name:name,customer_phone:phone,customer_address:address,
-    total_tnd:total,status:"جديد",payment_method:"الدفع عند الاستلام"
-  }).select("id").single();
+      return String(item.id) ===
+             String(id);
 
-  if(error){
-    console.error(error);
-    messageBox.innerHTML='<div class="notice" style="margin-top:12px">صار مشكل في إرسال الطلب. تأكد من RLS ثم حاول مرة أخرى.</div>';
+    });
+
+
+  if(
+    !product ||
+    Number(product.stock || 0) <= 0
+  ){
     return;
   }
 
-  const grouped=new Map();
-  cart.forEach(p=>{
-    const key=String(p.id);
-    const x=grouped.get(key);
-    if(x)x.quantity++;else grouped.set(key,{product_id:p.id,quantity:1,price_tnd:Number(p.price||0)});
+
+  cart.push({
+
+    id:product.id,
+
+    name:product.name,
+
+    price:Number(
+      product.price || 0
+    )
+
   });
-  const items=[...grouped.values()].map(x=>({order_id:order.id,product_id:x.product_id,quantity:x.quantity,price_tnd:x.price_tnd}));
-  const {error:itemError}=await sb.from("order_items").insert(items);
 
-  if(itemError){
-    console.error(itemError);
-    messageBox.innerHTML='<div class="notice" style="margin-top:12px">تم إنشاء الطلب لكن تعذر حفظ تفاصيل المنتجات. راجع صلاحيات order_items في Supabase.</div>';
-    return;
+
+  saveCart();
+
+  renderCart();
+
+  scrollToId("order");
+}
+
+
+function removeFromCart(index){
+
+  cart.splice(index,1);
+
+  saveCart();
+
+  renderCart();
+}
+
+
+function renderCart(){
+
+  document.getElementById("cartCount")
+    .textContent = cart.length;
+
+
+  const box =
+    document.getElementById("cart");
+
+
+  if(!cart.length){
+
+    box.innerHTML =
+      '<p class="muted">السلة فارغة. اختر منتجاً للمتابعة.</p>';
+
+  }else{
+
+    box.innerHTML =
+      cart.map(function(product,index){
+
+        return `
+
+          <div class="cartLine">
+
+            <span>
+              🛍️ ${escapeHtml(product.name)}
+            </span>
+
+            <span>
+
+              ${money(product.price)}
+
+              <button
+                class="secondary"
+                onclick="removeFromCart(${index})"
+              >
+                حذف
+              </button>
+
+            </span>
+
+          </div>
+
+        `;
+
+      }).join("");
+
   }
 
-  const waText=`طلب جديد من GhaddabGo
-رقم الطلب: ${orderNumber}
-رقم قاعدة البيانات: ${order.id}
-الاسم: ${name}
-الهاتف: ${phone}
-العنوان: ${address}
-المنتجات: ${cart.map(p=>p.name).join("، ")}
-المجموع: ${total} د.ت
-الدفع: عند الاستلام`;
 
-  messageBox.innerHTML=`<div class="success" style="margin-top:12px"><b>تم إرسال الطلب بنجاح ✅</b><br>رقم الطلب: <b>${orderNumber}</b><br>سيتم التواصل معك لتأكيد الطلب.</div>`;
-  window.open("https://wa.me/21625475226?text="+encodeURIComponent(waText),"_blank");
-  this.reset();cart=[];saveCart();renderCart();
-});
+  const total =
+    cart.reduce(function(sum,product){
+
+      return sum +
+        Number(product.price || 0);
+
+    },0);
+
+
+  document.getElementById("cartTotal")
+    .textContent =
+      "المجموع: " + money(total);
+}
+
+
+/* =========================
+   إرسال الطلب
+========================= */
+
+document
+  .getElementById("orderForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+
+      if(!cart.length){
+
+        alert(
+          "أضف منتجاً واحداً على الأقل."
+        );
+
+        return;
+      }
+
+
+      const name =
+        document
+          .getElementById("name")
+          .value
+          .trim();
+
+
+      const phone =
+        document
+          .getElementById("phone")
+          .value
+          .trim();
+
+
+      const address =
+        document
+          .getElementById("address")
+          .value
+          .trim();
+
+
+      const total =
+        cart.reduce(function(sum,product){
+
+          return sum +
+            Number(product.price || 0);
+
+        },0);
+
+
+      const orderNumber =
+        "GG-" +
+        Date.now()
+          .toString()
+          .slice(-8);
+
+
+      const messageBox =
+        document.getElementById(
+          "message"
+        );
+
+
+      const result =
+        await sb
+          .from("orders")
+          .insert({
+
+            customer_name:name,
+
+            customer_phone:phone,
+
+            customer_address:address,
+
+            total_tnd:total,
+
+            status:"جديد",
+
+            payment_method:
+              "الدفع عند الاستلام"
+
+          })
+          .select("id")
+          .single();
+
+
+      if(result.error){
+
+        console.error(result.error);
+
+        messageBox.innerHTML =
+          '<div class="notice">صار مشكل في إرسال الطلب. تأكد من RLS في Supabase.</div>';
+
+        return;
+      }
+
+
+      const order =
+        result.data;
+
+
+      const grouped =
+        new Map();
+
+
+      cart.forEach(function(product){
+
+        const key =
+          String(product.id);
+
+
+        const current =
+          grouped.get(key);
+
+
+        if(current){
+
+          current.quantity++;
+
+        }else{
+
+          grouped.set(
+            key,
+            {
+              product_id:product.id,
+              quantity:1,
+              price_tnd:
+                Number(product.price || 0)
+            }
+          );
+
+        }
+
+      });
+
+
+      const items =
+        Array.from(
+          grouped.values()
+        ).map(function(item){
+
+          return {
+
+            order_id:order.id,
+
+            product_id:
+              item.product_id,
+
+            quantity:
+              item.quantity,
+
+            price_tnd:
+              item.price_tnd
+
+          };
+
+        });
+
+
+      const itemResult =
+        await sb
+          .from("order_items")
+          .insert(items);
+
+
+      if(itemResult.error){
+
+        console.error(
+          itemResult.error
+        );
+
+        messageBox.innerHTML =
+          '<div class="notice">تم إنشاء الطلب لكن تعذر حفظ تفاصيل المنتجات.</div>';
+
+        return;
+      }
+
+
+      const whatsappText = `
+طلب جديد من GhaddabGo 🇹🇳
+
+رقم الطلب: ${orderNumber}
+
+الاسم: ${name}
+
+الهاتف: ${phone}
+
+العنوان: ${address}
+
+المنتجات:
+${cart.map(function(product){
+  return "- " + product.name;
+}).join("\n")}
+
+المجموع:
+${money(total)}
+
+الدفع:
+عند الاستلام
+`;
+
+
+      messageBox.innerHTML = `
+
+        <div class="success">
+
+          <b>
+            تم إرسال الطلب بنجاح ✅
+          </b>
+
+          <br>
+
+          رقم الطلب:
+          <b>${orderNumber}</b>
+
+          <br>
+
+          سيتم التواصل معك لتأكيد الطلب.
+
+        </div>
+
+      `;
+
+
+      window.open(
+        "https://wa.me/21625475226?text=" +
+        encodeURIComponent(
+          whatsappText
+        ),
+        "_blank"
+      );
+
+
+      this.reset();
+
+      cart = [];
+
+      saveCart();
+
+      renderCart();
+
+    }
+  );
+
+
+/* =========================
+   الإدارة
+========================= */
 
 async function openAdmin(){
-  document.getElementById("adminPanel").classList.remove("hidden");
+
+  document
+    .getElementById("adminPanel")
+    .classList.remove("hidden");
+
+
   scrollToId("adminPanel");
-  const {data:{session}}=await sb.auth.getSession();
+
+
+  const sessionResult =
+    await sb.auth.getSession();
+
+
+  const session =
+    sessionResult.data.session;
+
+
   if(session){
-    const {data:admin,error}=await sb.from("admins").select("user_id").eq("user_id",session.user.id).maybeSingle();
-    if(!error && admin){showAdminContent();return;}
+
+    const adminResult =
+      await sb
+        .from("admins")
+        .select("user_id")
+        .eq(
+          "user_id",
+          session.user.id
+        )
+        .maybeSingle();
+
+
+    if(
+      !adminResult.error &&
+      adminResult.data
+    ){
+
+      showAdminContent();
+
+      return;
+    }
+
+
     await sb.auth.signOut();
   }
-  document.getElementById("adminLogin").classList.remove("hidden");
-  document.getElementById("adminContent").classList.add("hidden");
-}
-function closeAdmin(){document.getElementById("adminPanel").classList.add("hidden");}
-function showAdminContent(){
-  document.getElementById("adminLogin").classList.add("hidden");
-  document.getElementById("adminContent").classList.remove("hidden");
-  renderAdmin();
-}
-async function adminLogin(){
-  const email=(document.getElementById("adminEmail").value||"").trim();
-  const password=document.getElementById("adminPassword").value||"";
-  const msg=document.getElementById("adminLoginMessage");
-  if(!email||!password){msg.innerHTML='<div class="danger">أدخل البريد الإلكتروني وكلمة المرور.</div>';return;}
-  msg.innerHTML='<p class="muted">جاري تسجيل الدخول...</p>';
-  const {data,error}=await sb.auth.signInWithPassword({email,password});
-  if(error){msg.innerHTML='<div class="danger">بيانات الدخول غير صحيحة أو الحساب غير مفعّل.</div>';return;}
-  const {data:admin,error:adminError}=await sb.from("admins").select("user_id").eq("user_id",data.user.id).maybeSingle();
-  if(adminError||!admin){await sb.auth.signOut();msg.innerHTML='<div class="danger">هذا الحساب ليس لديه صلاحية مدير.</div>';return;}
-  msg.innerHTML="";showAdminContent();
-}
-async function adminLogout(){
-  await sb.auth.signOut();
-  document.getElementById("adminContent").classList.add("hidden");
-  document.getElementById("adminLogin").classList.remove("hidden");
-  document.getElementById("adminPassword").value="";
+
+
+  document
+    .getElementById("adminLogin")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("adminContent")
+    .classList.add("hidden");
 }
 
-async function renderAdmin(){
-  const box=document.getElementById("adminOrders");
-  box.innerHTML="<p>جاري تحميل الطلبات...</p>";
-  const {data:orders,error}=await sb.from("orders")
-    .select("id,customer_name,customer_phone,customer_address,total_tnd,status,payment_method,created_at")
-    .order("created_at",{ascending:false});
-  if(error){
-    console.error(error);
-    box.innerHTML='<div class="notice">لا يمكن للإدارة قراءة الطلبات حالياً. يجب تسجيل دخول المدير وتطبيق سياسة RLS المناسبة.</div>';
+
+function closeAdmin(){
+
+  document
+    .getElementById("adminPanel")
+    .classList.add("hidden");
+}
+
+
+function showAdminContent(){
+
+  document
+    .getElementById("adminLogin")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("adminContent")
+    .classList.remove("hidden");
+
+
+  renderAdmin();
+}
+
+
+async function adminLogin(){
+
+  const email =
+    document
+      .getElementById("adminEmail")
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById("adminPassword")
+      .value;
+
+
+  const message =
+    document.getElementById(
+      "adminLoginMessage"
+    );
+
+
+  if(!email || !password){
+
+    message.innerHTML =
+      '<div class="danger">أدخل البريد الإلكتروني وكلمة المرور.</div>';
+
     return;
   }
-  if(!orders?.length){box.innerHTML='<p class="muted">لا توجد طلبات بعد.</p>';return;}
-  const meta=JSON.parse(localStorage.getItem("ghaddab_admin_meta")||"{}");
-  box.innerHTML=orders.map(o=>{
-    const m=meta[String(o.id)]||{};
-    return `
-    <div class="order">
-      <div class="orderHead"><b>طلب #${o.id}</b><span class="badge">${escapeHtml(o.status||"جديد")}</span></div>
-      <p><b>الحريف:</b> ${escapeHtml(o.customer_name)}</p>
-      <p><b>الهاتف:</b> ${escapeHtml(o.customer_phone)}</p>
-      <p><b>العنوان:</b> ${escapeHtml(o.customer_address)}</p>
-      <p><b>المجموع:</b> ${money(o.total_tnd)}</p>
-      <label>حالة الطلب</label>
-      <select onchange="changeStatus(${o.id},this.value)">
-        ${["جديد","تم التأكيد","خرج للتوصيل","تم التسليم","رفض الاستلام","ملغى"].map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}
-      </select>
-      <label>مصاريف التوصيل الفعلية (للمتابعة الداخلية)</label>
-      <input type="number" min="0" step="0.1" value="${escapeAttr(m.delivery_cost||"0")}" onchange="saveAdminMeta(${o.id},'delivery_cost',this.value)">
-      <label>ملاحظة الإدارة</label>
-      <textarea placeholder="مثال: رفض الاستلام بعد خروج الموزع" onchange="saveAdminMeta(${o.id},'admin_note',this.value)">${escapeHtml(m.admin_note||"")}</textarea>
-      <button type="button" onclick="saveAdminMeta(${o.id},'save','1');alert('تم حفظ الملاحظة ومصاريف التوصيل محلياً ✅');" style="margin-top:10px;width:100%;background:#16a34a;color:#fff;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:900;cursor:pointer">💾 حفظ الملاحظة والمصاريف</button>
-      <button style="margin-top:10px;background:#dc2626;color:#fff;border:0;border-radius:14px;padding:12px;font-weight:800" onclick="deleteAdminRecord(${o.id})">حذف السجل</button>
-    </div>`;
-  }).join("");
+
+
+  message.innerHTML =
+    '<p class="muted">جاري تسجيل الدخول...</p>';
+
+
+  const result =
+    await sb.auth.signInWithPassword({
+
+      email:email,
+
+      password:password
+
+    });
+
+
+  if(result.error){
+
+    message.innerHTML =
+      '<div class="danger">بيانات الدخول غير صحيحة أو الحساب غير مفعّل.</div>';
+
+    return;
+  }
+
+
+  const adminResult =
+    await sb
+      .from("admins")
+      .select("user_id")
+      .eq(
+        "user_id",
+        result.data.user.id
+      )
+      .maybeSingle();
+
+
+  if(
+    adminResult.error ||
+    !adminResult.data
+  ){
+
+    await sb.auth.signOut();
+
+    message.innerHTML =
+      '<div class="danger">هذا الحساب ليس لديه صلاحية مدير.</div>';
+
+    return;
+  }
+
+
+  message.innerHTML = "";
+
+  showAdminContent();
 }
-function saveAdminMeta(id,key,value){
-  const meta=JSON.parse(localStorage.getItem("ghaddab_admin_meta")||"{}");
-  meta[String(id)]={...(meta[String(id)]||{}),[key]:value};
-  localStorage.setItem("ghaddab_admin_meta",JSON.stringify(meta));
+
+
+async function adminLogout(){
+
+  await sb.auth.signOut();
+
+
+  document
+    .getElementById("adminContent")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("adminLogin")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("adminPassword")
+    .value = "";
 }
-function deleteAdminRecord(id){
-  if(!confirm("حذف هذا السجل من قاعدة البيانات؟")) return;
-  deleteOrder(id);
+
+
+/* =========================
+   طلبات الإدارة
+========================= */
+
+async function renderAdmin(){
+
+  const box =
+    document.getElementById(
+      "adminOrders"
+    );
+
+
+  box.innerHTML =
+    "<p>جاري تحميل الطلبات...</p>";
+
+
+  const result =
+    await sb
+      .from("orders")
+      .select(
+        "id,customer_name,customer_phone,customer_address,total_tnd,status,payment_method,created_at"
+      )
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+
+  if(result.error){
+
+    console.error(result.error);
+
+    box.innerHTML =
+      '<div class="notice">لا يمكن للإدارة قراءة الطلبات حالياً. راجع RLS في Supabase.</div>';
+
+    return;
+  }
+
+
+  const orders =
+    result.data || [];
+
+
+  if(!orders.length){
+
+    box.innerHTML =
+      '<p class="muted">لا توجد طلبات بعد.</p>';
+
+    return;
+  }
+
+
+  box.innerHTML =
+    orders.map(function(order){
+
+      return `
+
+        <div class="order">
+
+          <div class="orderHead">
+
+            <b>
+              طلب #${order.id}
+            </b>
+
+            <span class="badge">
+              ${escapeHtml(
+                order.status || "جديد"
+              )}
+            </span>
+
+          </div>
+
+          <p>
+            <b>الحريف:</b>
+            ${escapeHtml(
+              order.customer_name
+            )}
+          </p>
+
+          <p>
+            <b>الهاتف:</b>
+            ${escapeHtml(
+              order.customer_phone
+            )}
+          </p>
+
+          <p>
+            <b>العنوان:</b>
+            ${escapeHtml(
+              order.customer_address
+            )}
+          </p>
+
+          <p>
+            <b>المجموع:</b>
+            ${money(order.total_tnd)}
+          </p>
+
+          <label>
+            حالة الطلب
+          </label>
+
+          <select
+            onchange="changeStatus(${order.id},this.value)"
+          >
+
+            ${
+              [
+                "جديد",
+                "تم التأكيد",
+                "خرج للتوصيل",
+                "تم التسليم",
+                "رفض الاستلام",
+                "ملغى"
+              ]
+              .map(function(status){
+
+                return `
+                  <option
+                    value="${escapeAttr(status)}"
+                    ${
+                      status === order.status
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    ${status}
+                  </option>
+                `;
+
+              })
+              .join("")
+            }
+
+          </select>
+
+          <button
+            type="button"
+            onclick="deleteOrder(${order.id})"
+            style="
+              width:100%;
+              background:#dc2626;
+              color:white;
+              padding:12px;
+              border-radius:12px;
+              font-weight:800;
+            "
+          >
+            حذف الطلب
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
 }
-async function deleteOrder(id){
-  const {error}=await sb.from("orders").delete().eq("id",id);
-  if(error){alert("تعذر حذف السجل. تأكد من صلاحيات الإدارة.");console.error(error);return;}
-  const meta=JSON.parse(localStorage.getItem("ghaddab_admin_meta")||"{}");
-  delete meta[String(id)];
-  localStorage.setItem("ghaddab_admin_meta",JSON.stringify(meta));
+
+
+async function changeStatus(
+  id,
+  status
+){
+
+  const result =
+    await sb
+      .from("orders")
+      .update({
+        status:status
+      })
+      .eq("id",id);
+
+
+  if(result.error){
+
+    alert(
+      "تعذر تحديث حالة الطلب."
+    );
+
+    console.error(result.error);
+
+    return;
+  }
+
+
   renderAdmin();
 }
 
-async function changeStatus(id,status){
-  const {error}=await sb.from("orders").update({status}).eq("id",id);
-  if(error){alert("تعذر تحديث الحالة. تأكد من صلاحيات الإدارة.");console.error(error);return;}
+
+async function deleteOrder(id){
+
+  if(
+    !confirm(
+      "هل تريد حذف هذا الطلب؟"
+    )
+  ){
+    return;
+  }
+
+
+  const result =
+    await sb
+      .from("orders")
+      .delete()
+      .eq("id",id);
+
+
+  if(result.error){
+
+    alert(
+      "تعذر حذف الطلب. راجع صلاحيات الإدارة."
+    );
+
+    console.error(result.error);
+
+    return;
+  }
+
+
   renderAdmin();
 }
-function escapeHtml(s){return String(s??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
-function escapeAttr(s){return escapeHtml(s).replace(/\`/g,"&#96;");}
+
+
+/* =========================
+   تشغيل المتجر
+========================= */
 
 renderCart();
+
 loadProducts();
 
-const wa=document.createElement("a");
-wa.href="https://wa.me/21625475226?text="+encodeURIComponent("مرحبا GhaddabGo 👋 أريد الاستفسار عن منتج.");
-wa.target="_blank";wa.rel="noopener";wa.textContent="💬 WhatsApp";
-wa.style="position:fixed;bottom:20px;left:20px;background:#25D366;color:white;padding:14px 20px;border-radius:30px;text-decoration:none;font-weight:bold;z-index:9999;";
-document.body.appendChild(wa);
+
+/* WhatsApp */
+
+const whatsappButton =
+  document.createElement("a");
+
+
+whatsappButton.href =
+  "https://wa.me/21625475226?text=" +
+  encodeURIComponent(
+    "مرحبا GhaddabGo 👋 أريد الاستفسار عن منتج."
+  );
+
+
+whatsappButton.target = "_blank";
+
+whatsappButton.rel = "noopener";
+
+whatsappButton.textContent =
+  "💬 WhatsApp";
+
+
+whatsappButton.style =
+  "position:fixed;bottom:20px;left:20px;background:#25D366;color:white;padding:14px 20px;border-radius:30px;text-decoration:none;font-weight:bold;z-index:9999;";
+
+
+document.body.appendChild(
+  whatsappButton
+);
+
 </script>
+
 </body>
 </html>
