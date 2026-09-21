@@ -217,7 +217,69 @@ footer{
   .card{padding:16px}
 }
 </style>
-</head>
+</head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://jexfdnwnlgftlexjeza.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PX7R316oR8pXP5tXTYBdsw_N5uGgU56";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function loadProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id,name,slug,description,price,stock,active")
+    .eq("active", true)
+    .order("id");
+
+  if (error) {
+    console.error("Supabase error:", error);
+    return;
+  }
+
+  let grid = document.getElementById("products-grid");
+
+  if (!grid) {
+    grid = document.createElement("div");
+    grid.id = "products-grid";
+    grid.style.cssText =
+      "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;padding:20px;";
+    document.body.appendChild(grid);
+  }
+
+  grid.innerHTML = "";
+
+  data.forEach(product => {
+    const card = document.createElement("div");
+
+    card.style.cssText =
+      "background:white;border-radius:16px;padding:18px;box-shadow:0 4px 15px rgba(0,0,0,.08);";
+
+    card.innerHTML = `
+      <h3>${product.name || product.slug}</h3>
+      <p>${product.description || ""}</p>
+      <strong>${Number(product.price).toFixed(2)} DT</strong>
+      <p>Stock: ${product.stock}</p>
+      <button
+        onclick="addToCart(${product.id})"
+        style="padding:10px 16px;border:0;border-radius:10px;background:#16a34a;color:white;">
+        Ajouter au panier
+      </button>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+function addToCart(id) {
+  alert("Produit ajouté au panier ✅");
+}
+
+loadProducts();
+</script>
 <body>
 <header>
   <div class="wrap">
